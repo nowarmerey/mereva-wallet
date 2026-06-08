@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useI18n } from "@/lib/i18n";
 import AmountBubbles from "./AmountBubbles";
 import { getCurrency } from "@/lib/format";
@@ -122,7 +123,12 @@ export default function TransactionForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form?.note, form?.type, open, categoryTouched]);
 
-  if (!open || !form) return null;
+  // Render via a portal to <body> so the overlay always covers the whole
+  // viewport (above the navbar/sidebar), regardless of stacking contexts.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!open || !form || !mounted) return null;
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -192,9 +198,9 @@ export default function TransactionForm({
   const labelClass =
     "mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400";
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       {showBubbles && (
@@ -385,6 +391,7 @@ export default function TransactionForm({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

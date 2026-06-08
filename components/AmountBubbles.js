@@ -37,7 +37,10 @@ export default function AmountBubbles({ amounts, currency, onPick }) {
             type="button"
             key={`${amt}-${i}`}
             onMouseDown={(e) => e.preventDefault()}
-            onClick={() => onPick(amt)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onPick(amt);
+            }}
             style={{
               ...slot,
               width: size,
