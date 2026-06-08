@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import Logo, { LogoMark } from "@/components/Logo";
 import LanguageSelector from "@/components/LanguageSelector";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useI18n } from "@/lib/i18n";
 
 export default function LandingPage() {
@@ -55,6 +56,7 @@ export default function LandingPage() {
             >
               {t("nav.about")}
             </Link>
+            <ThemeToggle />
             <LanguageSelector />
             {authed ? (
               <Link

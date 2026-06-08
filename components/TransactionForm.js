@@ -197,6 +197,16 @@ export default function TransactionForm({
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
+      {showBubbles && (
+        <AmountBubbles
+          amounts={bubbles}
+          currency={getCurrency()}
+          onPick={(amt) => {
+            update("amount", String(amt));
+            setShowBubbles(false);
+          }}
+        />
+      )}
       <div
         className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900"
         onClick={(e) => e.stopPropagation()}
@@ -277,37 +287,25 @@ export default function TransactionForm({
 
           <div>
             <label className={labelClass}>{t("form.amount")}</label>
-            <div className="relative">
-              {showBubbles && (
-                <AmountBubbles
-                  amounts={bubbles}
-                  currency={getCurrency()}
-                  onPick={(amt) => {
-                    update("amount", String(amt));
-                    setShowBubbles(false);
-                  }}
-                />
-              )}
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0.00"
-                className={inputClass}
-                value={form.amount}
-                onFocus={() => {
-                  clearTimeout(bubbleHideTimer.current);
-                  if (form.category) {
-                    loadBubbles(form.type, form.category);
-                    setShowBubbles(true);
-                  }
-                }}
-                onBlur={() => {
-                  bubbleHideTimer.current = setTimeout(() => setShowBubbles(false), 250);
-                }}
-                onChange={(e) => update("amount", e.target.value)}
-              />
-            </div>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+              className={inputClass}
+              value={form.amount}
+              onFocus={() => {
+                clearTimeout(bubbleHideTimer.current);
+                if (form.category) {
+                  loadBubbles(form.type, form.category);
+                  setShowBubbles(true);
+                }
+              }}
+              onBlur={() => {
+                bubbleHideTimer.current = setTimeout(() => setShowBubbles(false), 250);
+              }}
+              onChange={(e) => update("amount", e.target.value)}
+            />
           </div>
 
           <div>
