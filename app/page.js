@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import Logo, { LogoMark } from "@/components/Logo";
@@ -10,6 +11,21 @@ export default function LandingPage() {
   const { t } = useI18n();
   const { status } = useSession();
   const authed = status === "authenticated";
+
+  // Approved reviews (fall back to sample testimonials when none yet).
+  const [reviews, setReviews] = useState(null);
+  useEffect(() => {
+    fetch("/api/feedback")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((d) => setReviews(Array.isArray(d) ? d : []))
+      .catch(() => setReviews([]));
+  }, []);
+  const sampleReviews = [
+    { name: "Lina", rating: 5, message: "Finally I know where my money goes every month. So simple!" },
+    { name: "Omar", rating: 5, message: "The budgets and reminders keep me on track. Love the clean design." },
+    { name: "Sophie", rating: 5, message: "Multiple wallets and the forecast are exactly what I needed." },
+  ];
+  const shownReviews = reviews && reviews.length > 0 ? reviews : sampleReviews;
 
   const features = [
     { icon: "🎯", title: t("land.f1Title"), desc: t("land.f1Desc") },
@@ -100,7 +116,9 @@ export default function LandingPage() {
 
           {/* Hero mock card */}
           <div className="relative">
-            <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+            <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-indigo-400/30 blur-2xl animate-blob" />
+            <div className="pointer-events-none absolute -bottom-10 -left-8 h-40 w-40 rounded-full bg-emerald-400/30 blur-2xl animate-blob" style={{ animationDelay: "3s" }} />
+            <div className="relative animate-float rounded-3xl border border-slate-200 bg-white p-5 shadow-xl dark:border-slate-800 dark:bg-slate-900">
               <div className="mb-4 flex items-center justify-between">
                 <span className="flex items-center gap-2 font-semibold">
                   <LogoMark size={24} /> {t("nav.dashboard")}
@@ -144,7 +162,8 @@ export default function LandingPage() {
           {features.map((f, i) => (
             <div
               key={i}
-              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+              className="animate-fadeup rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
+              style={{ animationDelay: `${i * 90}ms` }}
             >
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-2xl dark:bg-indigo-500/15">
                 {f.icon}
@@ -174,6 +193,38 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Testimonials / reviews */}
+      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-3xl font-bold tracking-tight">{t("land.reviewsTitle")}</h2>
+          <p className="mt-3 text-slate-600 dark:text-slate-300">{t("land.reviewsSub")}</p>
+        </div>
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {shownReviews.slice(0, 6).map((r, i) => (
+            <figure
+              key={r.id || i}
+              className="animate-fadeup rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+              style={{ animationDelay: `${i * 90}ms` }}
+            >
+              <div className="text-amber-400">
+                {"⭐".repeat(Math.min(5, Math.max(1, r.rating || 5)))}
+              </div>
+              <blockquote className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                “{r.message}”
+              </blockquote>
+              <figcaption className="mt-4 flex items-center gap-2">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-600 dark:bg-indigo-500/20">
+                  {(r.name || "?")[0]?.toUpperCase()}
+                </span>
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                  {r.name}
+                </span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+
       {/* Pricing teaser / CTA */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 to-violet-600 px-6 py-12 text-center text-white sm:px-12">
@@ -199,21 +250,38 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-slate-100 py-10 dark:border-slate-800">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-            <Logo size={24} />
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="lg:col-span-2">
+              <Logo size={26} />
+              <p className="mt-3 max-w-xs text-sm text-slate-500 dark:text-slate-400">
+                {t("app.tagline")}
+              </p>
+            </div>
+
+            {/* Company */}
+            <div>
+              <p className="mb-3 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                {t("footer.company")}
+              </p>
+              <nav className="flex flex-col gap-2 text-sm text-slate-500 dark:text-slate-400">
+                <Link href="/about" className="hover:text-indigo-600 dark:hover:text-indigo-400">{t("nav.about")}</Link>
+                <Link href="/help" className="hover:text-indigo-600 dark:hover:text-indigo-400">{t("nav.help")}</Link>
+                <Link href="/billing" className="hover:text-indigo-600 dark:hover:text-indigo-400">{t("nav.billing")}</Link>
+              </nav>
+            </div>
+
+            {/* Legal */}
             <div>
               <p className="mb-3 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
                 {t("legal.title")}
               </p>
-              <nav className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
-                <Link href="/about" className="hover:text-indigo-600 dark:hover:text-indigo-400">{t("nav.about")}</Link>
+              <nav className="flex flex-col gap-2 text-sm text-slate-500 dark:text-slate-400">
+                <Link href="/legal/impressum" className="hover:text-indigo-600 dark:hover:text-indigo-400">{t("legal.impressum")}</Link>
+                <Link href="/legal/agb" className="hover:text-indigo-600 dark:hover:text-indigo-400">{t("legal.agb")}</Link>
+                <Link href="/legal/widerruf" className="hover:text-indigo-600 dark:hover:text-indigo-400">{t("legal.widerruf")}</Link>
+                <Link href="/legal/privacy" className="hover:text-indigo-600 dark:hover:text-indigo-400">{t("legal.privacy")}</Link>
                 <Link href="/legal/terms" className="hover:text-indigo-600 dark:hover:text-indigo-400">{t("legal.terms")}</Link>
                 <Link href="/legal/security" className="hover:text-indigo-600 dark:hover:text-indigo-400">{t("legal.security")}</Link>
-                <Link href="/legal/privacy" className="hover:text-indigo-600 dark:hover:text-indigo-400">{t("legal.privacy")}</Link>
-                <Link href="/legal/us-privacy" className="hover:text-indigo-600 dark:hover:text-indigo-400">{t("legal.usPrivacy")}</Link>
-                <Link href="/legal/acceptable-use" className="hover:text-indigo-600 dark:hover:text-indigo-400">{t("legal.aup")}</Link>
-                <Link href="/legal/accessibility" className="hover:text-indigo-600 dark:hover:text-indigo-400">{t("legal.accessibility")}</Link>
-                <Link href="/legal/privacy-choices" className="hover:text-indigo-600 dark:hover:text-indigo-400">{t("legal.choices")}</Link>
               </nav>
             </div>
           </div>

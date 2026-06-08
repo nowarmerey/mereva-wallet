@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { signIn, signOut } from "next-auth/react";
 import { useI18n } from "@/lib/i18n";
+import FeedbackModal from "./FeedbackModal";
 
 const STATUS_STYLES = {
   active: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300",
@@ -15,6 +16,7 @@ export default function UserMenu() {
   const { t } = useI18n();
   const [me, setMe] = useState(null);
   const [open, setOpen] = useState(false);
+  const [fbOpen, setFbOpen] = useState(false);
   const ref = useRef(null);
 
   useEffect(() => {
@@ -111,6 +113,15 @@ export default function UserMenu() {
               </button>
             )}
             <button
+              onClick={() => {
+                setOpen(false);
+                setFbOpen(true);
+              }}
+              className="block w-full rounded-lg px-3 py-2 text-start text-sm text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700"
+            >
+              {t("fb.cta")}
+            </button>
+            <button
               onClick={() => signOut({ callbackUrl: "/login" })}
               className="block w-full rounded-lg px-3 py-2 text-start text-sm text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10"
             >
@@ -119,6 +130,8 @@ export default function UserMenu() {
           </div>
         </div>
       )}
+
+      <FeedbackModal open={fbOpen} onClose={() => setFbOpen(false)} />
     </div>
   );
 }

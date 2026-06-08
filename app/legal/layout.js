@@ -7,9 +7,12 @@ import LanguageSelector from "@/components/LanguageSelector";
 import { useI18n } from "@/lib/i18n";
 
 const PAGES = [
+  { href: "/legal/impressum", key: "legal.impressum" },
+  { href: "/legal/agb", key: "legal.agb" },
+  { href: "/legal/widerruf", key: "legal.widerruf" },
   { href: "/legal/terms", key: "legal.terms" },
-  { href: "/legal/security", key: "legal.security" },
   { href: "/legal/privacy", key: "legal.privacy" },
+  { href: "/legal/security", key: "legal.security" },
   { href: "/legal/us-privacy", key: "legal.usPrivacy" },
   { href: "/legal/acceptable-use", key: "legal.aup" },
   { href: "/legal/accessibility", key: "legal.accessibility" },

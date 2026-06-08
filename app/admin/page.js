@@ -21,10 +21,11 @@ export default function AdminPage() {
       <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
         Admin Dashboard
       </h2>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         {[
           ["users", "👥 Users"],
           ["plans", "💎 Plans & Offers"],
+          ["feedback", "💬 Feedback"],
         ].map(([k, label]) => (
           <button
             key={k}
@@ -39,7 +40,89 @@ export default function AdminPage() {
           </button>
         ))}
       </div>
-      {tab === "users" ? <UsersTab /> : <PlansTab />}
+      {tab === "users" ? <UsersTab /> : tab === "plans" ? <PlansTab /> : <FeedbackTab />}
+    </div>
+  );
+}
+
+function FeedbackTab() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  async function load() {
+    setLoading(true);
+    const res = await fetch("/api/admin/feedback");
+    setItems(res.ok ? await res.json() : []);
+    setLoading(false);
+  }
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function setApproved(id, approved) {
+    await fetch(`/api/admin/feedback/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ approved }),
+    });
+    load();
+  }
+  async function remove(id) {
+    if (!confirm("Delete this feedback?")) return;
+    await fetch(`/api/admin/feedback/${id}`, { method: "DELETE" });
+    load();
+  }
+
+  if (loading) return <p className="text-slate-500">Loading feedback…</p>;
+  if (items.length === 0)
+    return (
+      <p className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-400 dark:border-slate-800 dark:bg-slate-900">
+        No feedback yet.
+      </p>
+    );
+
+  return (
+    <div className="space-y-3">
+      {items.map((f) => (
+        <div
+          key={f.id}
+          className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-100">
+                {f.name}{" "}
+                <span className="text-amber-400">
+                  {"⭐".repeat(Math.min(5, Math.max(1, f.rating)))}
+                </span>
+                {f.approved && (
+                  <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
+                    Published
+                  </span>
+                )}
+              </p>
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{f.message}</p>
+              <p className="mt-1 text-xs text-slate-400">
+                {new Date(f.createdAt).toLocaleString()}
+              </p>
+            </div>
+            <div className="flex shrink-0 flex-col gap-1">
+              <button
+                onClick={() => setApproved(f.id, !f.approved)}
+                className="rounded-md bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-300"
+              >
+                {f.approved ? "Unpublish" : "Publish"}
+              </button>
+              <button
+                onClick={() => remove(f.id)}
+                className="rounded-md px-2 py-1 text-xs font-medium text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

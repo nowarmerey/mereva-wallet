@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import AmountBubbles from "./AmountBubbles";
+import { getCurrency } from "@/lib/format";
 
 function toDateInput(value) {
   const d = value ? new Date(value) : new Date();
@@ -28,6 +30,17 @@ export default function TransactionForm({
   const [uploading, setUploading] = useState(false);
   const [suggestion, setSuggestion] = useState(null);
   const [categoryTouched, setCategoryTouched] = useState(false);
+  const [bubbles, setBubbles] = useState([]);
+  const [showBubbles, setShowBubbles] = useState(false);
+  const bubbleHideTimer = useRef(null);
+
+  function loadBubbles(type, category) {
+    if (!category) return;
+    fetch(`/api/transactions/common-amounts?type=${type}&category=${encodeURIComponent(category)}`)
+      .then((r) => (r.ok ? r.json() : { amounts: [] }))
+      .then((d) => setBubbles(Array.isArray(d.amounts) ? d.amounts : []))
+      .catch(() => setBubbles([]));
+  }
   const suggestTimer = useRef(null);
 
   // Load wallets once.
@@ -264,15 +277,37 @@ export default function TransactionForm({
 
           <div>
             <label className={labelClass}>{t("form.amount")}</label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder="0.00"
-              className={inputClass}
-              value={form.amount}
-              onChange={(e) => update("amount", e.target.value)}
-            />
+            <div className="relative">
+              {showBubbles && (
+                <AmountBubbles
+                  amounts={bubbles}
+                  currency={getCurrency()}
+                  onPick={(amt) => {
+                    update("amount", String(amt));
+                    setShowBubbles(false);
+                  }}
+                />
+              )}
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                className={inputClass}
+                value={form.amount}
+                onFocus={() => {
+                  clearTimeout(bubbleHideTimer.current);
+                  if (form.category) {
+                    loadBubbles(form.type, form.category);
+                    setShowBubbles(true);
+                  }
+                }}
+                onBlur={() => {
+                  bubbleHideTimer.current = setTimeout(() => setShowBubbles(false), 250);
+                }}
+                onChange={(e) => update("amount", e.target.value)}
+              />
+            </div>
           </div>
 
           <div>

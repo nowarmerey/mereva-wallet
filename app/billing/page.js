@@ -20,6 +20,7 @@ export default function BillingPage() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [consent, setConsent] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -36,6 +37,10 @@ export default function BillingPage() {
   }, []);
 
   async function subscribe(planId) {
+    if (!consent) {
+      setError(t("billing.consentRequired"));
+      return;
+    }
     setBusy(true);
     setError("");
     try {
@@ -101,13 +106,25 @@ export default function BillingPage() {
           </p>
         )}
         {membership?.stripeCustomerId && (
-          <button
-            onClick={manage}
-            disabled={busy}
-            className="mt-3 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
-          >
-            {t("billing.manage")}
-          </button>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <button
+              onClick={manage}
+              disabled={busy}
+              className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              {t("billing.manage")}
+            </button>
+            {["active", "trialing"].includes(status) && (
+              <button
+                onClick={manage}
+                disabled={busy}
+                className="rounded-lg border border-rose-300 px-4 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50 dark:border-rose-500/40 dark:hover:bg-rose-500/10"
+              >
+                {t("billing.cancel")}
+              </button>
+            )}
+            <span className="w-full text-xs text-slate-400">{t("billing.cancelDesc")}</span>
+          </div>
         )}
       </div>
 
@@ -121,6 +138,18 @@ export default function BillingPage() {
       <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
         {t("billing.choosePlan")}
       </h3>
+
+      {/* Withdrawal-waiver consent (digital service, §356 BGB) */}
+      <label className="flex items-start gap-2 rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+        <input
+          type="checkbox"
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+          className="mt-0.5 h-4 w-4 accent-indigo-600"
+        />
+        <span>{t("billing.consent")}</span>
+      </label>
+
       {plans.length === 0 ? (
         <p className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-400 dark:border-slate-800 dark:bg-slate-900">
           {t("billing.noPlans")}
@@ -174,10 +203,17 @@ export default function BillingPage() {
                 disabled={busy}
                 className="mt-6 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
               >
-                {plan.trialDays > 0
+                {plan.priceCents === 0
+                  ? t("billing.subscribe")
+                  : plan.trialDays > 0
                   ? t("billing.startTrial", { n: plan.trialDays })
-                  : t("billing.subscribe")}
+                  : t("billing.subscribePaid")}
               </button>
+              {plan.priceCents > 0 && (
+                <p className="mt-2 text-center text-[11px] text-slate-400">
+                  {t("billing.payObligation")}
+                </p>
+              )}
             </div>
           ))}
         </div>

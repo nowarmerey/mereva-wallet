@@ -57,9 +57,9 @@ export default function Navbar() {
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
       <div className="flex h-16 items-center justify-between gap-2 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="md:hidden">
+          <Link href="/" className="md:hidden" title="Home">
             <LogoMark size={26} />
-          </span>
+          </Link>
           <h1 className="truncate text-base font-semibold text-slate-800 sm:text-lg dark:text-slate-100">
             {title}
           </h1>

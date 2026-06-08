@@ -10,7 +10,15 @@ export default function PwaManager() {
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => {});
+      if (process.env.NODE_ENV === "production") {
+        navigator.serviceWorker.register("/sw.js").catch(() => {});
+      } else {
+        // In dev, ensure no stale SW serves cached chunks (avoids hydration glitches).
+        navigator.serviceWorker.getRegistrations().then((regs) =>
+          regs.forEach((r) => r.unregister())
+        );
+        if (window.caches) caches.keys().then((ks) => ks.forEach((k) => caches.delete(k)));
+      }
     }
     const onPrompt = (e) => {
       e.preventDefault();

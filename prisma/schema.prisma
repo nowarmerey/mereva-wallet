@@ -36,6 +36,21 @@ model User {
   settings     Settings?
   membership   UserSubscription?
   pushSubs     PushSubscription[]
+  feedback     Feedback[]
+}
+
+// User reviews / feedback (admin approves before showing publicly).
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name      String
+  rating    Int      @default(5)
+  message   String
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([approved])
 }
 
 // Web Push subscriptions (PWA notifications).

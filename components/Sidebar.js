@@ -33,9 +33,9 @@ export default function Sidebar() {
 
   return (
     <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-slate-200 bg-white px-4 py-6 dark:border-slate-800 dark:bg-slate-900">
-      <div className="mb-6 px-2">
+      <Link href="/" className="mb-6 block px-2" title="Mereva Wallet — Home">
         <Logo size={30} />
-      </div>
+      </Link>
 
       <nav className="flex flex-1 flex-col gap-1 overflow-y-auto">
         {allLinks.map((link) => {
