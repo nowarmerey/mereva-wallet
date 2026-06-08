@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Offline — Mereva Wallet</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        text-align: center;
+        padding: 24px;
+      }
+      .card { max-width: 360px; }
+      .mark {
+        width: 64px; height: 64px; border-radius: 14px; background: #e30613;
+        display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;
+        font-weight: 700; font-style: italic; font-size: 38px; font-family: Georgia, serif;
+      }
+      h1 { font-size: 20px; margin: 0 0 8px; }
+      p { color: #94a3b8; font-size: 14px; }
+      button {
+        margin-top: 16px; background: #6366f1; color: #fff; border: 0;
+        padding: 10px 20px; border-radius: 10px; font-size: 14px; cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="mark">M</div>
+      <h1>You're offline</h1>
+      <p>Mereva Wallet needs an internet connection to load your data. Please reconnect and try again.</p>
+      <button onclick="location.reload()">Retry</button>
+    </div>
+  </body>
+</html>

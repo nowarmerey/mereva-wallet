@@ -1,0 +1,39 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+
+# local env files
+.env*.local
+.env
+
+# prisma / sqlite
+/prisma/*.db
+/prisma/*.db-journal
+
+# personal data exports / backups (do NOT publish)
+/prisma/backup-sqlite.json
+
+# uploaded receipts (user data)
+/public/uploads/*
+!/public/uploads/.gitkeep
+
+# local-only helpers & runtime config (machine-specific paths)
+/start-dev.cmd
+/.claude/
+dev-server.log
+npm-install.log

@@ -1,0 +1,240 @@
+// Prisma schema for the Wallet App (v3 — multi-tenant SaaS)
+// Database: PostgreSQL. Multi-user with auth, roles, plans and billing.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Auth (NextAuth / Auth.js compatible)
+// ---------------------------------------------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String? // for email/password sign-in
+  role          String    @default("USER") // USER | ADMIN
+  locale        String    @default("en") // en | ar | de
+  createdAt     DateTime  @default(now())
+
+  accounts     Account[]
+  sessions     Session[]
+  wallets      Wallet[]
+  categories   Category[]
+  transactions Transaction[]
+  bills        Bill[]
+  recurring    Subscription[]
+  goals        Goal[]
+  settings     Settings?
+  membership   UserSubscription?
+  pushSubs     PushSubscription[]
+}
+
+// Web Push subscriptions (PWA notifications).
+model PushSubscription {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ---------------------------------------------------------------------------
+// Billing (plans / offers + per-user membership)
+// ---------------------------------------------------------------------------
+
+model Plan {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  priceCents    Int      @default(0)
+  currency      String   @default("usd")
+  interval      String   @default("month") // month | year
+  features      String? // JSON array of feature lines
+  stripePriceId String?
+  trialDays     Int      @default(0)
+  active        Boolean  @default(true)
+  isFeatured    Boolean  @default(false)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  subscriptions UserSubscription[]
+}
+
+model UserSubscription {
+  id                   String    @id @default(cuid())
+  userId               String    @unique
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId               String?
+  plan                 Plan?     @relation(fields: [planId], references: [id])
+  status               String    @default("none") // none|trialing|active|past_due|canceled
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  currentPeriodEnd     DateTime?
+  grantedByAdmin       Boolean   @default(false)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// App data (all scoped to a user)
+// ---------------------------------------------------------------------------
+
+model Transaction {
+  id            Int      @id @default(autoincrement())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type          String // income | expense
+  category      String
+  amount        Float
+  note          String?
+  receipt       String?
+  walletId      Int?
+  wallet        Wallet?  @relation(fields: [walletId], references: [id])
+  isTransfer    Boolean  @default(false)
+  transferGroup String?
+  createdAt     DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Wallet {
+  id           Int           @id @default(autoincrement())
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  icon         String        @default("👛")
+  color        String        @default("#6366f1")
+  isDefault    Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  transactions Transaction[]
+
+  @@index([userId])
+}
+
+model Category {
+  id           Int      @id @default(autoincrement())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  type         String   @default("expense")
+  icon         String   @default("🏷️")
+  monthlyLimit Float?
+  createdAt    DateTime @default(now())
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model Bill {
+  id        Int           @id @default(autoincrement())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  amount    Float
+  category  String        @default("Bills")
+  dueDay    Int           @default(1)
+  walletId  Int?
+  createdAt DateTime      @default(now())
+  payments  BillPayment[]
+
+  @@index([userId])
+}
+
+model BillPayment {
+  id     Int      @id @default(autoincrement())
+  billId Int
+  bill   Bill     @relation(fields: [billId], references: [id], onDelete: Cascade)
+  period String
+  paidAt DateTime @default(now())
+
+  @@unique([billId, period])
+}
+
+model Subscription {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  amount    Float
+  frequency String   @default("monthly")
+  category  String   @default("Subscriptions")
+  walletId  Int?
+  nextDate  DateTime
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Goal {
+  id        Int       @id @default(autoincrement())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  target    Float
+  saved     Float     @default(0)
+  icon      String    @default("🎯")
+  deadline  DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+model Settings {
+  id              Int     @id @default(autoincrement())
+  userId          String  @unique
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currency        String  @default("USD")
+  theme           String  @default("light")
+  locale          String  @default("en")
+  pinHash         String?
+  autoLockMinutes Int     @default(5)
+}
