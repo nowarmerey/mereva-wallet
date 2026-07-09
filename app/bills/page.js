@@ -84,7 +84,7 @@ export default function BillsPage() {
   const isCurrentMonth = period === periodOf(now);
 
   const inputClass =
-    "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-indigo-900";
+    "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-700 dark:bg-slate-800 glass-input dark:text-slate-100 dark:focus:ring-indigo-900";
   const labelClass = "mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400";
 
   return (
@@ -102,13 +102,13 @@ export default function BillsPage() {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card">
           <p className="text-sm text-slate-500 dark:text-slate-400">{t("bills.unpaid")}</p>
           <p className="mt-1 text-xl font-bold text-rose-600 dark:text-rose-400">
             {formatMoney(totalDue, currency)}
           </p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card">
           <p className="text-sm text-slate-500 dark:text-slate-400">{t("bills.paid")}</p>
           <p className="mt-1 text-xl font-bold text-emerald-600 dark:text-emerald-400">
             {formatMoney(totalPaid, currency)}
@@ -127,7 +127,7 @@ export default function BillsPage() {
       ) : (
         <div className="space-y-2">
           {bills.length === 0 && (
-            <p className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-400 dark:border-slate-800 dark:bg-slate-900">
+            <p className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-400 dark:border-slate-800 dark:bg-slate-900 glass-card">
               {t("bills.none")}
             </p>
           )}
@@ -138,7 +138,7 @@ export default function BillsPage() {
             return (
               <div
                 key={b.id}
-                className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+                className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card"
               >
                 <div className="flex items-center gap-3">
                   <input
@@ -191,7 +191,7 @@ export default function BillsPage() {
       {/* Add bill */}
       <form
         onSubmit={addBill}
-        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card"
       >
         <h3 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
           {t("bills.addBill")}

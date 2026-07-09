@@ -84,7 +84,7 @@ export default function BillingPage() {
       </h2>
 
       {/* Current status */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card">
         <p className="text-sm text-slate-500 dark:text-slate-400">{t("billing.current")}</p>
         <div className="mt-1 flex items-center gap-3">
           <span className="text-lg font-semibold capitalize text-slate-800 dark:text-slate-100">
@@ -140,7 +140,7 @@ export default function BillingPage() {
       </h3>
 
       {/* Withdrawal-waiver consent (digital service, §356 BGB) */}
-      <label className="flex items-start gap-2 rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+      <label className="flex items-start gap-2 rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 glass-card dark:text-slate-300">
         <input
           type="checkbox"
           checked={consent}
@@ -151,7 +151,7 @@ export default function BillingPage() {
       </label>
 
       {plans.length === 0 ? (
-        <p className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-400 dark:border-slate-800 dark:bg-slate-900">
+        <p className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-400 dark:border-slate-800 dark:bg-slate-900 glass-card">
           {t("billing.noPlans")}
         </p>
       ) : (
@@ -159,7 +159,7 @@ export default function BillingPage() {
           {plans.map((plan) => (
             <div
               key={plan.id}
-              className={`flex flex-col rounded-2xl border bg-white p-6 shadow-sm dark:bg-slate-900 ${
+              className={`flex flex-col rounded-2xl border bg-white p-6 shadow-sm dark:bg-slate-900 glass-card ${
                 plan.isFeatured
                   ? "border-indigo-500 ring-2 ring-indigo-500/30"
                   : "border-slate-200 dark:border-slate-800"

@@ -64,3 +64,109 @@ body {
     animation: none !important;
   }
 }
+
+/* =========================================================================
+   Liquid Glass design system
+   Glass classes are appended next to the original bg-* utilities in the
+   markup; being defined after @tailwind utilities, they win the cascade,
+   and the original classes remain as the no-backdrop-filter fallback.
+   ========================================================================= */
+
+/* Ambient color field behind everything — glass needs something to blur. */
+.app-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  background:
+    radial-gradient(42rem 30rem at 12% 8%, rgba(99, 102, 241, 0.2), transparent 65%),
+    radial-gradient(46rem 34rem at 88% 15%, rgba(168, 85, 247, 0.16), transparent 65%),
+    radial-gradient(52rem 38rem at 50% 108%, rgba(56, 189, 248, 0.18), transparent 65%);
+}
+.dark .app-ambient {
+  background:
+    radial-gradient(42rem 30rem at 12% 8%, rgba(99, 102, 241, 0.26), transparent 65%),
+    radial-gradient(46rem 34rem at 88% 15%, rgba(168, 85, 247, 0.2), transparent 65%),
+    radial-gradient(52rem 38rem at 50% 108%, rgba(14, 165, 233, 0.18), transparent 65%);
+}
+
+/* Content surfaces: cards, panels, table containers. */
+.glass-card {
+  background: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(160%);
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 8px 24px rgba(15, 23, 42, 0.06);
+}
+.dark .glass-card {
+  background: rgba(15, 23, 42, 0.45);
+  border-color: rgba(148, 163, 184, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 8px 28px rgba(0, 0, 0, 0.35);
+}
+
+/* App chrome: navbar + sidebar (stronger blur, more transparent). */
+.glass-chrome {
+  background: rgba(255, 255, 255, 0.5);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+.dark .glass-chrome {
+  background: rgba(15, 23, 42, 0.4);
+  border-color: rgba(148, 163, 184, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Dialogs / floating panels: heavier blur, more opaque for focus. */
+.glass-modal {
+  background: rgba(255, 255, 255, 0.75);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  backdrop-filter: blur(24px) saturate(170%);
+  border-color: rgba(255, 255, 255, 0.65);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 24px 60px rgba(15, 23, 42, 0.22);
+}
+.dark .glass-modal {
+  background: rgba(15, 23, 42, 0.7);
+  border-color: rgba(148, 163, 184, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 24px 60px rgba(0, 0, 0, 0.55);
+}
+
+/* Form fields: closer to opaque so typed text stays crisp. */
+.glass-input {
+  background: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
+  backdrop-filter: blur(8px) saturate(140%);
+}
+.dark .glass-input {
+  background: rgba(15, 23, 42, 0.55);
+}
+
+/* Fall back to the original opaque utilities when glass can't render,
+   and respect users who ask for less transparency. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-card, .glass-chrome, .glass-modal, .glass-input {
+    background: rgb(255, 255, 255);
+  }
+  .dark .glass-card, .dark .glass-chrome, .dark .glass-modal, .dark .glass-input {
+    background: rgb(15, 23, 42);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass-card, .glass-chrome, .glass-modal, .glass-input {
+    background: rgb(255, 255, 255);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .dark .glass-card, .dark .glass-chrome, .dark .glass-modal, .dark .glass-input {
+    background: rgb(15, 23, 42);
+  }
+}

@@ -43,7 +43,7 @@ export default function RegisterPage() {
   }
 
   const inputClass =
-    "w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100";
+    "w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-700 dark:bg-slate-900 glass-input dark:text-slate-100";
   const labelClass = "mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400";
 
   return (

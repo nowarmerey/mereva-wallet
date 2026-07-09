@@ -9,7 +9,7 @@ export default function Error({ error, reset }) {
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center p-6">
-      <div className="max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div className="max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card">
         <div className="text-4xl">⚠️</div>
         <h2 className="mt-3 text-lg font-semibold text-slate-800 dark:text-slate-100">
           Something went wrong

@@ -120,14 +120,14 @@ export default function DashboardPage() {
       />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card">
           <h2 className="mb-4 text-base font-semibold text-slate-800 dark:text-slate-100">
             {t("dash.byCategory")}
           </h2>
           <CategoryPie data={stats.byCategory} />
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card">
           <h2 className="mb-4 text-base font-semibold text-slate-800 dark:text-slate-100">
             {t("dash.overTime")}
           </h2>
@@ -135,7 +135,7 @@ export default function DashboardPage() {
         </section>
       </div>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-base font-semibold text-slate-800 dark:text-slate-100">
             {t("dash.budgets")}
@@ -150,7 +150,7 @@ export default function DashboardPage() {
         <BudgetProgress items={budgets} currency={currency} />
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-base font-semibold text-slate-800 dark:text-slate-100">
             {t("dash.recent")}

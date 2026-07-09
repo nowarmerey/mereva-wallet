@@ -91,7 +91,7 @@ export default function SubscriptionsPage() {
   const totalMonthly = subs.reduce((s, x) => s + monthlyCost(x), 0);
 
   const inputClass =
-    "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-indigo-900";
+    "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-700 dark:bg-slate-800 glass-input dark:text-slate-100 dark:focus:ring-indigo-900";
   const labelClass = "mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400";
 
   return (
@@ -100,7 +100,7 @@ export default function SubscriptionsPage() {
         <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
           {t("subs.title")}
         </h2>
-        <div className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card">
           <span className="text-slate-500 dark:text-slate-400">{t("subs.estMonthly")}: </span>
           <span className="font-semibold text-slate-800 dark:text-slate-100">
             {formatMoney(totalMonthly, currency)}
@@ -119,7 +119,7 @@ export default function SubscriptionsPage() {
       ) : (
         <div className="space-y-2">
           {subs.length === 0 && (
-            <p className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-400 dark:border-slate-800 dark:bg-slate-900">
+            <p className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-400 dark:border-slate-800 dark:bg-slate-900 glass-card">
               {t("subs.none")}
             </p>
           )}
@@ -130,7 +130,7 @@ export default function SubscriptionsPage() {
             return (
               <div
                 key={s.id}
-                className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+                className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card"
               >
                 <div>
                   <p className="font-medium text-slate-800 dark:text-slate-100">
@@ -180,7 +180,7 @@ export default function SubscriptionsPage() {
       {/* Add subscription */}
       <form
         onSubmit={addSub}
-        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card"
       >
         <h3 className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
           {t("subs.add")}

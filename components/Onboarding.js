@@ -41,7 +41,7 @@ export default function Onboarding() {
 
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900">
+      <div className="w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900 glass-modal">
         <div className="bg-gradient-to-br from-indigo-600 to-violet-600 px-6 py-7 text-center text-white">
           <div className="text-4xl">👛</div>
           <h2 className="mt-2 text-xl font-bold">{t("onb.welcome")}</h2>

@@ -5,7 +5,7 @@ import { useI18n } from "@/lib/i18n";
 
 function Card({ title, value, currency, accent, icon }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card">
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
           {title}

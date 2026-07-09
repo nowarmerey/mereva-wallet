@@ -36,7 +36,7 @@ export default function AuthShell({ children }) {
           <p className="mt-4 text-lg text-slate-300">{t("auth.panelSubtitle")}</p>
         </div>
 
-        <div className="w-full max-w-md rounded-2xl bg-white p-8 text-slate-800 shadow-2xl dark:bg-slate-900 dark:text-slate-100">
+        <div className="w-full max-w-md rounded-2xl bg-white p-8 text-slate-800 shadow-2xl dark:bg-slate-900 glass-modal dark:text-slate-100">
           {children}
         </div>
       </main>

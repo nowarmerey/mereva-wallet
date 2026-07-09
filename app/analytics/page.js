@@ -13,7 +13,7 @@ const MONTHS = [
 
 function Stat({ label, value, sub, accent }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card">
       <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{label}</p>
       <p className={`mt-2 text-2xl font-bold ${accent || "text-slate-800 dark:text-slate-100"}`}>
         {value}
@@ -228,7 +228,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Cash-flow forecast */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card">
         <h3 className="mb-1 text-base font-semibold text-slate-800 dark:text-slate-100">
           {t("an.forecast")}
         </h3>
@@ -277,7 +277,7 @@ export default function AnalyticsPage() {
       </section>
 
       {/* Trend chart */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card">
         <h3 className="mb-4 text-base font-semibold text-slate-800 dark:text-slate-100">
           {t("an.trend")}
         </h3>

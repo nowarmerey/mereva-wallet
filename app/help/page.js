@@ -136,7 +136,7 @@ export default function HelpPage() {
           return (
             <div
               key={i}
-              className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900"
+              className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card"
             >
               <button
                 onClick={() => setOpen(isOpen ? -1 : i)}

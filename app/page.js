@@ -120,7 +120,7 @@ export default function LandingPage() {
           <div className="relative">
             <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-indigo-400/30 blur-2xl animate-blob" />
             <div className="pointer-events-none absolute -bottom-10 -left-8 h-40 w-40 rounded-full bg-emerald-400/30 blur-2xl animate-blob" style={{ animationDelay: "3s" }} />
-            <div className="relative animate-float rounded-3xl border border-slate-200 bg-white p-5 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+            <div className="relative animate-float rounded-3xl border border-slate-200 bg-white p-5 shadow-xl dark:border-slate-800 dark:bg-slate-900 glass-modal">
               <div className="mb-4 flex items-center justify-between">
                 <span className="flex items-center gap-2 font-semibold">
                   <LogoMark size={24} /> {t("nav.dashboard")}
@@ -164,7 +164,7 @@ export default function LandingPage() {
           {features.map((f, i) => (
             <div
               key={i}
-              className="animate-fadeup rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
+              className="animate-fadeup rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900 glass-card"
               style={{ animationDelay: `${i * 90}ms` }}
             >
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-2xl dark:bg-indigo-500/15">
@@ -205,7 +205,7 @@ export default function LandingPage() {
           {shownReviews.slice(0, 6).map((r, i) => (
             <figure
               key={r.id || i}
-              className="animate-fadeup rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+              className="animate-fadeup rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 glass-card"
               style={{ animationDelay: `${i * 90}ms` }}
             >
               <div className="text-amber-400">

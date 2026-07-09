@@ -41,6 +41,7 @@ export default function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{ __html: initScript }} />
       </head>
       <body className="font-sans bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100">
+        <div className="app-ambient" aria-hidden="true" />
         <Providers>
           <AppShell>{children}</AppShell>
         </Providers>

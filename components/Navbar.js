@@ -54,7 +54,7 @@ export default function Navbar() {
   const title = t(titleKeys[pathname] || "app.name");
 
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
+    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/80 backdrop-blur dark:border-slate-800 dark:bg-slate-900/80 glass-chrome">
       <div className="flex h-16 items-center justify-between gap-2 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2 min-w-0">
           <Link href="/" className="md:hidden" title="Home">

@@ -35,7 +35,7 @@ export default function UpgradePrompt() {
 
   return (
     <div className="flex min-h-[70vh] items-center justify-center p-4">
-      <div className="w-full max-w-lg overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900">
+      <div className="w-full max-w-lg overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900 glass-modal">
         {/* Header */}
         <div className="bg-gradient-to-br from-indigo-600 to-violet-600 px-8 py-10 text-center text-white">
           <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/15 text-3xl backdrop-blur">

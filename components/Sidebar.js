@@ -32,7 +32,7 @@ export default function Sidebar() {
     : links;
 
   return (
-    <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-slate-200 bg-white px-4 py-6 dark:border-slate-800 dark:bg-slate-900">
+    <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-slate-200 bg-white px-4 py-6 dark:border-slate-800 dark:bg-slate-900 glass-chrome">
       <Link href="/" className="mb-6 block px-2" title="Mereva Wallet — Home">
         <Logo size={30} />
       </Link>
