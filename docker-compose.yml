@@ -36,11 +36,34 @@ services:
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
       STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
       NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD}
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      EMAIL_FROM: ${EMAIL_FROM}
+      CRON_SECRET: ${CRON_SECRET}
+      NEXT_PUBLIC_VAPID_PUBLIC_KEY: ${NEXT_PUBLIC_VAPID_PUBLIC_KEY}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY}
+      VAPID_SUBJECT: ${VAPID_SUBJECT}
     ports:
       - "3000:3000"
     volumes:
       # Persist uploaded receipts across restarts
       - uploads:/app/public/uploads
+
+  # Hourly scheduler: triggers salary auto-posting, subscription charges
+  # and reminders via the app's cron endpoint.
+  cron:
+    image: curlimages/curl:latest
+    restart: unless-stopped
+    depends_on:
+      - app
+    environment:
+      CRON_SECRET: ${CRON_SECRET}
+    command: >
+      sh -c 'while true; do
+        curl -fsS -H "x-cron-secret: $$CRON_SECRET" http://app:3000/api/cron/run || true;
+        sleep 3600;
+      done'
 
 volumes:
   pgdata:

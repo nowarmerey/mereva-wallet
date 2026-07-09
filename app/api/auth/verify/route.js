@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+// Depends on the ?token query param — never statically prerendered.
+export const dynamic = "force-dynamic";
+
 // GET /api/auth/verify?token=... -> marks the email as verified, then redirects.
 export async function GET(request) {
   const base = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL;
