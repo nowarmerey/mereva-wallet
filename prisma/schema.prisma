@@ -252,4 +252,10 @@ model Settings {
   locale          String  @default("en")
   pinHash         String?
   autoLockMinutes Int     @default(5)
+
+  // Automatic monthly salary (null/0 amount = disabled)
+  salaryAmount   Float?
+  salaryDay      Int     @default(1) // day of month (1-31, clamped to month length)
+  salaryWalletId Int?
+  salaryLastPaid String? // "YYYY-MM" period already posted (idempotency)
 }

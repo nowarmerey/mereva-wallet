@@ -14,6 +14,14 @@ export default function SettingsPage() {
   const [theme, setTheme] = useState("light");
   const [autoLock, setAutoLock] = useState(5);
   const [hasPin, setHasPin] = useState(false);
+
+  // Automatic monthly salary
+  const [salaryAmount, setSalaryAmount] = useState("");
+  const [salaryDay, setSalaryDay] = useState(1);
+  const [salaryWalletId, setSalaryWalletId] = useState("");
+  const [wallets, setWallets] = useState([]);
+  const [salaryMsg, setSalaryMsg] = useState("");
+  const [salaryErr, setSalaryErr] = useState("");
   const [hasGoogle, setHasGoogle] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -76,11 +84,40 @@ export default function SettingsPage() {
           setCurrency(d.currency || "USD");
           setAutoLock(d.autoLockMinutes ?? 5);
           setHasPin(!!d.hasPin);
+          setSalaryAmount(d.salaryAmount ?? "");
+          setSalaryDay(d.salaryDay ?? 1);
+          setSalaryWalletId(d.salaryWalletId ?? "");
         }
       })
       .catch(() => {});
+    fetch("/api/wallets")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((w) => setWallets(Array.isArray(w) ? w : []))
+      .catch(() => {});
     loadMe();
   }, []);
+
+  async function saveSalary() {
+    setSalaryErr("");
+    setSalaryMsg("");
+    try {
+      const res = await fetch("/api/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          salaryAmount: salaryAmount === "" ? null : Number(salaryAmount),
+          salaryDay: Number(salaryDay) || 1,
+          salaryWalletId: salaryWalletId === "" ? null : Number(salaryWalletId),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to save");
+      setSalaryMsg(t("settings.salarySaved"));
+      setTimeout(() => setSalaryMsg(""), 2500);
+    } catch (err) {
+      setSalaryErr(err.message);
+    }
+  }
 
   function applyTheme(value) {
     setTheme(value);
@@ -324,6 +361,60 @@ export default function SettingsPage() {
         {error && <p className="text-sm text-rose-600">{error}</p>}
         {saved && <p className="text-sm text-emerald-600">{t("common.save")} ✓</p>}
         <button onClick={handleSave} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+          {t("common.save")}
+        </button>
+      </div>
+
+      {/* Automatic monthly salary */}
+      <div className={card}>
+        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+          💰 {t("settings.salary")}
+        </h3>
+        <p className="text-xs text-slate-400">{t("settings.salaryHint")}</p>
+        <div>
+          <label className={labelClass}>{t("settings.salaryAmount")}</label>
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            className={inputClass}
+            value={salaryAmount}
+            onChange={(e) => setSalaryAmount(e.target.value)}
+            placeholder={t("settings.salaryOffPh")}
+          />
+        </div>
+        <div>
+          <label className={labelClass}>{t("settings.salaryDay")}</label>
+          <input
+            type="number"
+            min="1"
+            max="31"
+            className={inputClass}
+            value={salaryDay}
+            onChange={(e) => setSalaryDay(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className={labelClass}>{t("settings.salaryWallet")}</label>
+          <select
+            className={inputClass}
+            value={salaryWalletId}
+            onChange={(e) => setSalaryWalletId(e.target.value)}
+          >
+            <option value="">{t("settings.salaryDefaultWallet")}</option>
+            {wallets.map((w) => (
+              <option key={w.id} value={w.id}>
+                {w.icon} {w.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        {salaryErr && <p className="text-sm text-rose-600">{salaryErr}</p>}
+        {salaryMsg && <p className="text-sm text-emerald-600">{salaryMsg}</p>}
+        <button
+          onClick={saveSalary}
+          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+        >
           {t("common.save")}
         </button>
       </div>

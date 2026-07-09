@@ -31,7 +31,42 @@ async function handle(request) {
   const now = new Date();
   const in3d = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
   const period = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-  const summary = { charged: 0, reminded: 0 };
+  const summary = { salaries: 0, charged: 0, reminded: 0 };
+
+  // 0) Auto-post monthly salaries
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const salaryConfigs = await prisma.settings.findMany({
+    where: {
+      salaryAmount: { gt: 0 },
+      OR: [{ salaryLastPaid: null }, { salaryLastPaid: { not: period } }],
+    },
+  });
+  for (const cfg of salaryConfigs) {
+    // Clamp the payday to the current month's length (e.g. day 31 in April → 30).
+    const payday = Math.min(cfg.salaryDay || 1, daysInMonth);
+    if (now.getDate() < payday) continue;
+    await prisma.transaction.create({
+      data: {
+        userId: cfg.userId,
+        type: "income",
+        category: "Salary",
+        amount: cfg.salaryAmount,
+        note: `Salary (auto) — ${period}`,
+        walletId: cfg.salaryWalletId || null,
+        createdAt: now,
+      },
+    });
+    await prisma.settings.update({
+      where: { id: cfg.id },
+      data: { salaryLastPaid: period },
+    });
+    await sendPushToUser(cfg.userId, {
+      title: "Mereva Wallet",
+      body: `Salary of ${cfg.salaryAmount} was added to your wallet.`,
+      url: "/transactions",
+    }).catch(() => {});
+    summary.salaries++;
+  }
 
   // 1) Auto-post due subscriptions
   const due = await prisma.subscription.findMany({
