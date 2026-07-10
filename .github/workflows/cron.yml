@@ -1,0 +1,32 @@
+# Hourly trigger for the app's scheduled tasks (salary auto-posting,
+# subscription charges, bill/trial reminders).
+#
+# On Railway the docker-compose "cron" sidecar does not run, so this
+# GitHub Actions schedule replaces it. It hits the public /api/cron/run
+# endpoint every hour with the shared secret.
+#
+# Required repository secrets (Settings -> Secrets and variables -> Actions):
+#   APP_URL      e.g. https://mereva-wallet-production.up.railway.app
+#   CRON_SECRET  the same value set in Railway's CRON_SECRET variable
+#
+# GitHub's scheduled runs can be delayed by a few minutes under load;
+# that is fine for these once-a-day/month tasks.
+
+name: Scheduled tasks
+
+on:
+  schedule:
+    - cron: "0 * * * *" # every hour, on the hour (UTC)
+  workflow_dispatch: {} # allows a manual run from the Actions tab
+
+jobs:
+  ping-cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger /api/cron/run
+        run: |
+          code=$(curl -sS -o /dev/null -w "%{http_code}" -X POST \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.APP_URL }}/api/cron/run")
+          echo "cron endpoint returned HTTP $code"
+          test "$code" = "200"
