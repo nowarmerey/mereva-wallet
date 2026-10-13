@@ -1,4 +1,6 @@
-# 👛 My Wallet — Multi-tenant SaaS Expense Manager
+# 👛 Mereva Wallet — Multi-tenant SaaS Expense Manager
+
+> Part of my portfolio → **[nawarmeree.com](https://nawarmeree.com)** · by [Nawar Meree](https://www.linkedin.com/in/nawar-meree-036491164)
 
 A modern, multi-user personal-finance web app, ready to deploy and sell as a
 subscription service.
@@ -37,20 +39,13 @@ backup · i18n (EN / AR / DE).
 
 ### 1. Start PostgreSQL (Docker)
 
-On **this machine** a Postgres container named `wallet-postgres` is already
-provisioned (with your data) and set to auto-start — so you can skip this step
-locally. Verify it's up with `docker ps`.
-
-If you ever need to (re)create it manually:
+Start a local PostgreSQL 16 in Docker:
 ```bash
 docker run -d --name wallet-postgres --restart unless-stopped \
   -e POSTGRES_USER=wallet -e POSTGRES_PASSWORD=wallet -e POSTGRES_DB=wallet \
   -p 5432:5432 -v wallet_pgdata:/var/lib/postgresql/data postgres:16-alpine
 ```
-
-> The `docker compose up -d db` command in this repo is meant for a **fresh
-> server**. Don't run it on this machine — it would clash with `wallet-postgres`
-> on port 5432.
+(or `docker compose up -d db` with the compose file in this repo).
 
 ### 2. Configure environment
 ```bash
@@ -58,13 +53,13 @@ cp .env.example .env
 # then edit .env — at minimum set NEXTAUTH_SECRET (generate one):
 #   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
-`DATABASE_URL` already matches the Docker Postgres above.
+`DATABASE_URL` in `.env.example` already matches the Docker Postgres above.
 
 ### 3. Install, migrate, seed
 ```bash
 npm install
 npx prisma migrate deploy      # create the tables
-npm run seed                   # admin account + default plans (+ imports old data)
+npm run seed                   # admin account + default plans
 ```
 
 ### 4. Run
